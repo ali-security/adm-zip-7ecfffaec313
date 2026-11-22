@@ -721,12 +721,15 @@ module.exports = function (/**String*/ input, /** object */ options) {
                 return false;
             }
 
-            for (var entry in _zip.entries) {
+            // iterate the entry objects themselves: `for...in` walked array indexes
+            // (and any inherited enumerable keys), so `entry.isDirectory` never
+            // matched and stray keys made test() return false
+            for (var entry of _zip.entries) {
                 try {
                     if (entry.isDirectory) {
                         continue;
                     }
-                    var content = _zip.entries[entry].getData(pass);
+                    var content = entry.getData(pass);
                     if (!content) {
                         return false;
                     }
